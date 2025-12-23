@@ -26,6 +26,10 @@ interface IRepository {
     findOneID();
     update();
     delete();
+} 
+
+interface IQueryRepository extends IRepository {
+    findManyByQuery(query);
 }
 
 
@@ -77,6 +81,18 @@ class MYSQLRepository implements IRepository {
     }
 }
 
+class MYSQLQueryRepository extends MYSQLRepository {
+    findManyByQuery(query) {
+        console.log("find many data from MYSQL database by query"); 
+    }
+}
+
 // 백엔드
 const repo1: IRepository = new MongoRepository(new DatabaseConnection("127.0.0.1", 27017, "root", "password"));
 const repo2: IRepository = new MYSQLRepository(new DatabaseConnection("127.0.0.1", 27017, "root", "password"));
+
+const repo3: IRepository = new MYSQLQueryRepository(new DatabaseConnection("127.0.0.1", 27017, "root", "password")); // 이것도 가능 
+
+const repo4: IQueryRepository = new MYSQLQueryRepository(new DatabaseConnection("127.0.0.1", 27017, "root", "password"));
+
+const repo5: IRepository & {findManyByQuery(query: any): void} = new MYSQLQueryRepository(new DatabaseConnection("127.0.0.1", 27017, "root", "password"));   
